@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\BooksRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BooksRepository::class)]
@@ -29,6 +31,17 @@ class Books
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     private ?Authors $author = null;
+
+    /**
+     * @var Collection<int, Ratings>
+     */
+    #[ORM\OneToMany(targetEntity: Ratings::class, mappedBy: 'book')]
+    private Collection $ratings;
+
+    public function __construct()
+    {
+        $this->ratings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -91,6 +104,36 @@ class Books
     public function setAuthor(?Authors $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ratings>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Ratings $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Ratings $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getBook() === $this) {
+                $rating->setBook(null);
+            }
+        }
 
         return $this;
     }
