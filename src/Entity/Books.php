@@ -26,7 +26,7 @@ class Books
     #[ORM\Column(length: 255)]
     private ?string $genre = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: "datetime_immutable")]
     private ?\DateTimeImmutable $publicationDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
@@ -41,6 +41,7 @@ class Books
     public function __construct()
     {
         $this->ratings = new ArrayCollection();
+        $this->publicationDate = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

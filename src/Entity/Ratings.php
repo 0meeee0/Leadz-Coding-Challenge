@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\RatingsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RatingsRepository::class)]
+#[ApiResource()]
 class Ratings
 {
     #[ORM\Id]
@@ -27,6 +29,11 @@ class Ratings
 
     #[ORM\ManyToOne(inversedBy: 'ratings')]
     private ?Books $book = null;
+
+    public function __construct()
+    {
+        $this->creationDate = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
