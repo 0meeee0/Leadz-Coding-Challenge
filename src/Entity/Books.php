@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\BooksRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BooksRepository::class)]
 #[ApiResource()]
+#[ApiFilter(OrderFilter::class, properties:['title'])]
 class Books
 {
     #[ORM\Id]
@@ -26,7 +29,7 @@ class Books
     #[ORM\Column(length: 255)]
     private ?string $genre = null;
 
-    #[ORM\Column(type: "datetime_immutable")]
+    #[ORM\Column]
     private ?\DateTimeImmutable $publicationDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
@@ -41,7 +44,6 @@ class Books
     public function __construct()
     {
         $this->ratings = new ArrayCollection();
-        $this->publicationDate = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
