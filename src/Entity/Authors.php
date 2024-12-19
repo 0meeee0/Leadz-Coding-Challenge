@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\AuthorsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,6 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AuthorsRepository::class)]
 #[ApiResource()]
+#[ApiFilter(SearchFilter::class, properties: [
+    'firstName' => 'exact',
+    'lastName' => 'exact'
+])]
 class Authors
 {
     #[ORM\Id]
