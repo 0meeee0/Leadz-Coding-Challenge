@@ -9,6 +9,7 @@ use App\Repository\AuthorsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AuthorsRepository::class)]
 #[ApiResource()]
@@ -24,12 +25,15 @@ class Authors
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $bibliography = null;
 
     /**
