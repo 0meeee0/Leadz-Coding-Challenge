@@ -9,42 +9,57 @@ use App\Repository\BooksRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BooksRepository::class)]
-#[ApiResource()]
+#[ApiResource(
+    normalizationContext: ['groups' => ['book.read']]
+)]
 #[ApiFilter(OrderFilter::class, properties: ['title', 'genre', 'author.id'])]
 class Books
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['book.read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups(['book.read'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups(['book.read'])]
+
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups(['book.read'])]
+
     private ?string $genre = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
+    #[Groups(['book.read'])]
+
     private ?\DateTimeImmutable $publicationDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[Assert\NotNull]
+    #[Groups(['book.read'])]
+
     private ?Authors $author = null;
 
     /**
      * @var Collection<int, Ratings>
      */
     #[ORM\OneToMany(targetEntity: Ratings::class, mappedBy: 'book')]
+    #[Groups(['book.read'])]
+
     private Collection $ratings;
 
     public function __construct()

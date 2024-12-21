@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\RatingsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RatingsRepository::class)]
@@ -14,22 +15,27 @@ class Ratings
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['book.read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups(['book.read'])]
     private ?string $fullName = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups(['book.read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Groups(['book.read'])]
     private ?string $comment = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
+    #[Groups(['book.read'])]
     private ?\DateTimeImmutable $creationDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'ratings')]
