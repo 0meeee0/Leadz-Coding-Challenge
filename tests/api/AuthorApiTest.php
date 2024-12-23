@@ -62,19 +62,47 @@ class AuthorApiTest extends WebTestCase
 
         $data = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertArrayHasKey('id', $data); // Ensure the author was created
-        $authorId = $data['id']; // Store the author ID for later use
+        $this->assertArrayHasKey('id', $data);
+        $authorId = $data['id'];
 
-        // Step 2: Delete the author
         $client->request('DELETE', '/api/authors/' . $authorId);
 
-        $this->assertResponseIsSuccessful(); // Ensure the deletion request was successful (HTTP 200 or 204)
+        $this->assertResponseIsSuccessful();
 
-        // Step 3: Verify that the author was deleted by trying to retrieve the deleted author
         $client->request('GET', '/api/authors/' . $authorId);
 
-        // Assert that the response status is 404, meaning the author no longer exists
         $this->assertResponseStatusCodeSame(404);
     }
+    public function testEditAuthor()
+    {
+        $client = static::createClient();
 
+        $client->request('GET', '/api/authors');
+        $this->assertResponseIsSuccessful();
+
+        $authors = json_decode($client->getResponse()->getContent(), true);
+        $this->assertNotEmpty($authors['member'], 'No authors found to edit.');
+
+        $authorId = $authors['member'][0]['id'];
+
+        $updatedData = [
+            'firstName' => 'UpdatedName',
+        ];
+
+        $client->request(
+            'PATCH',
+            '/api/authors/' . $authorId,
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/merge-patch+json'],
+            json_encode($updatedData)
+        );
+
+        $this->assertResponseIsSuccessful();
+
+        $client->request('GET', '/api/authors/' . $authorId);
+        $updatedAuthor = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertEquals('UpdatedName', $updatedAuthor['firstName']);
+    }
 }
